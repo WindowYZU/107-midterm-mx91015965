@@ -31,6 +31,8 @@ public class NewJFrame extends javax.swing.JFrame {
      */
     public NewJFrame() {
         initComponents();
+        DefaultListModel model=new DefaultListModel();
+        jList1.setModel(model);
     }
 
     /**
@@ -53,6 +55,11 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "https://mbtskoudsalg.com/images/png-image-7.png", "http://pngimg.com/uploads/eagle/eagle_PNG1227.png", "https://upload.wikimedia.org/wikipedia/commons/4/4a/Photographer_Barnstar.png", "http://pluspng.com/img-png/bulb-hd-png-light-bulb-png-transparent-image-2048.png", " " }));
 
+        jList1.addContainerListener(new java.awt.event.ContainerAdapter() {
+            public void componentAdded(java.awt.event.ContainerEvent evt) {
+                jList1ComponentAdded(evt);
+            }
+        });
         jScrollPane1.setViewportView(jList1);
 
         jScrollPane2.setViewportView(jLabel2);
@@ -86,7 +93,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
                     .addComponent(jScrollPane2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
@@ -101,7 +108,8 @@ public class NewJFrame extends javax.swing.JFrame {
         try {
             jButton1.setEnabled(false);
             //從 combobox 抓出被選到的項目，存到變數裡
-            String selectedItem="";
+            String selectedItem=""+jComboBox1.getSelectedItem();
+            System.out.println(selectedItem);
             /////////////////////////////////////
             URL url = new URL(selectedItem);
             String fileName = url.getFile();
@@ -117,8 +125,10 @@ public class NewJFrame extends javax.swing.JFrame {
                     if (finished) {
                         progress.setVisible(false);
                         jButton1.setEnabled(true);
-                        //將下載好的項目加入到 jList 裡面
-                        
+                        //將下載好的項目加入到 jList 裡
+                        DefaultListModel model=(DefaultListModel) jList1.getModel();
+                        model.addElement(selectedItem);
+                        jList1.updateUI();
                         ////////////////////////////
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
@@ -126,6 +136,9 @@ public class NewJFrame extends javax.swing.JFrame {
                                 try {
                                     URL fileURL=tempFile.toURI().toURL();
                                     //利用 fileURL 將 image icon 加到 jLabel2
+                                    ImageIcon icon=new ImageIcon(fileURL);
+                                    jLabel2.setIcon(icon);
+                                    
                                     ////////////////////////////////////////
                                     jList1.updateUI();
                                 } catch (Exception ex) {
@@ -137,6 +150,7 @@ public class NewJFrame extends javax.swing.JFrame {
                     } else if (failed) {
                         progress.setVisible(false);
                         jButton1.setEnabled(true);
+                       
                     }
                     ////////////////
                 }
@@ -146,6 +160,10 @@ public class NewJFrame extends javax.swing.JFrame {
             ex.printStackTrace();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jList1ComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_jList1ComponentAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jList1ComponentAdded
 
     /**
      * @param args the command line arguments
